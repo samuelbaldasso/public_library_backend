@@ -37,6 +37,16 @@ public class UserController {
         return service.usersList();
     }
 
+    @PutMapping("/{id}")
+    public User update(@PathVariable Long id, @RequestBody User user) {
+        return service.updateUser(id, user);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        service.deleteUser(id);
+    }
+
     @PostMapping("/authenticate")
     public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));

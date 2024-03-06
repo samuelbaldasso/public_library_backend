@@ -1,7 +1,6 @@
 package com.sbaldass.booksapi.services;
 
 import com.sbaldass.booksapi.domain.User;
-import com.sbaldass.booksapi.domain.UserInfoDetails;
 import com.sbaldass.booksapi.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,7 +26,7 @@ public class UserService implements UserDetailsService {
 
         Optional<User> userDetail = repository.findByName(username);
 
-        return userDetail.map(UserInfoDetails::new)
+        return userDetail.map(User::new)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found " + username));
     }
 
@@ -35,13 +34,31 @@ public class UserService implements UserDetailsService {
         userInfo.setName(userInfo.getName());
         userInfo.setRoles(userInfo.getRoles());
         userInfo.setEmail(userInfo.getEmail());
+        userInfo.setPhone(userInfo.getPhone());
+        userInfo.setAddress(userInfo.getAddress());
         userInfo.setPassword(encoder.encode(userInfo.getPassword()));
         repository.save(userInfo);
         return userInfo;
     }
 
-    public List<User> usersList(){
+    public List<User> usersList() {
         return repository.findAll();
     }
 
+    public User updateUser(Long id, User user) {
+        User userInfo = repository.findById(id).orElseThrow(() ->
+                new UsernameNotFoundException("User not found " + user));
+        userInfo.setName(user.getName());
+        userInfo.setRoles(user.getRoles());
+        userInfo.setEmail(user.getEmail());
+        userInfo.setPhone(user.getPhone());
+        userInfo.setAddress(user.getAddress());
+        userInfo.setPassword(encoder.encode(user.getPassword()));
+        repository.save(userInfo);
+        return userInfo;
+    }
+
+    public void deleteUser(Long id){
+        repository.deleteById(id);
+    }
 }
